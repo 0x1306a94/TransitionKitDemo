@@ -1,0 +1,20 @@
+PODS:
+  - MBProgressHUD (1.2.0)
+  - TransitionKit (2.2.1)
+
+DEPENDENCIES:
+  - MBProgressHUD
+  - TransitionKit
+
+SPEC REPOS:
+  trunk:
+    - MBProgressHUD
+    - TransitionKit
+
+SPEC CHECKSUMS:
+  MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
+  TransitionKit: 9ceccda4cd0cdc0a05ef85eb235e5a3292c3c250
+
+PODFILE CHECKSUM: a92d66f00db74986bc9e8ac27f4fca7cc971c0ac
+
+COCOAPODS: 1.11.3

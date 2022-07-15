@@ -1,0 +1,6 @@
+framework module Pods_TransitionKitDemo {
+  umbrella header "Pods-TransitionKitDemo-umbrella.h"
+
+  export *
+  module * { export * }
+}
