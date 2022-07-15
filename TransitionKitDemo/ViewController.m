@@ -45,6 +45,7 @@ static NSString *const KKPlaceOrderFinishEvent = @"finish-evenet";
 @property (nonatomic, strong) TKStateMachine *stateMachine;
 @property (nonatomic, strong) MBProgressHUD *loadingHUD;
 @property (nonatomic, strong) MBProgressHUD *waitHUD;
+@property (nonatomic, strong) MBProgressHUD *sliderValidationHUD;
 @property (nonatomic, assign) BOOL placeOrdering;
 @property (nonatomic, assign) NSInteger pollCount;
 
@@ -71,9 +72,15 @@ static NSString *const KKPlaceOrderFinishEvent = @"finish-evenet";
     self.waitHUD.bezelView.style = MBProgressHUDBackgroundStyleSolidColor;
     self.waitHUD.bezelView.color = [UIColor orangeColor];
     self.waitHUD.detailsLabel.text = @"waitng...";
+    
+    self.sliderValidationHUD = [[MBProgressHUD alloc] initWithView:self.view];
+    self.sliderValidationHUD.userInteractionEnabled = NO;
+    self.sliderValidationHUD.mode = MBProgressHUDModeIndeterminate;
+    self.sliderValidationHUD.bezelView.style = MBProgressHUDBackgroundStyleSolidColor;
+    self.sliderValidationHUD.bezelView.color = [UIColor orangeColor];
+    self.sliderValidationHUD.detailsLabel.text = @"slider...";
 
     [self.view addSubview:self.loadingHUD];
-    [self.view addSubview:self.waitHUD];
 
     [self setupStateMachine];
 }
@@ -111,6 +118,8 @@ static NSString *const KKPlaceOrderFinishEvent = @"finish-evenet";
             [weakSelf.stateMachine fireEvent:KKPlaceOrderSliderValidationEvent userInfo:nil error:nil];
         } else if (weakSelf.tokenValidationSwitch.on) {
             [weakSelf.stateMachine fireEvent:KKPlaceOrderOrderTokenEvent userInfo:nil error:nil];
+        } else {
+            [weakSelf.stateMachine fireEvent:KKPlaceOrderSubmitEvent userInfo:nil error:nil];
         }
     }];
 
@@ -142,8 +151,12 @@ static NSString *const KKPlaceOrderFinishEvent = @"finish-evenet";
     TKState *sliderValidationState = [TKState stateWithName:KKPlaceOrderSliderValidationState];
     [sliderValidationState setDidEnterStateBlock:^(TKState *state, TKTransition *transition) {
         NSLog(@"开始滑块验证....");
+        [weakSelf.view addSubview:weakSelf.sliderValidationHUD];
+        [weakSelf.sliderValidationHUD showAnimated:YES];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             NSLog(@"滑块验证成功");
+            [weakSelf.sliderValidationHUD hideAnimated:YES];
+            [weakSelf.sliderValidationHUD removeFromSuperview];
             if (weakSelf.tokenValidationSwitch.on) {
                 [weakSelf.stateMachine fireEvent:KKPlaceOrderOrderTokenEvent userInfo:nil error:nil];
             } else {
